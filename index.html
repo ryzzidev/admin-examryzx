@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin EXAM RYZX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600&display=swap');
+        
+        :root {
+            --primary: #2563eb;
+            --sidebar: #0f172a;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .token-font { font-family: 'JetBrains Mono', monospace; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .session-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .session-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #3b82f6;
+        }
+
+        .input-elegant {
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+        .input-elegant:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .nav-link.active {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: #60a5fa;
+        }
+
+        .page-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .page-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Mobile Sidebar Overlay & Header Trigger -->
+        <div class="lg:hidden bg-[#0f172a] text-white p-4 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <img src="https://files.catbox.moe/o2tn9c.png" alt="Logo" class="w-9 h-9 rounded-lg object-cover ring-2 ring-blue-500/50">
+                <h1 class="font-extrabold tracking-tight text-base">EXAM RYZX</h1>
+            </div>
+            <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2 focus:outline-none">
+                <i class="fas fa-bars text-xl" id="mobile-menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar (Desktop & Mobile Dropdown) -->
+        <aside id="sidebar" class="w-full lg:w-72 bg-[#0f172a] text-slate-300 hidden lg:flex flex-col lg:sticky lg:top-0 h-auto lg:h-screen z-20 shadow-xl lg:shadow-none">
+            <div class="p-6 lg:p-8">
+                <div class="hidden lg:flex items-center gap-4 mb-10">
+                    <div class="relative">
+                        <img src="https://files.catbox.moe/o2tn9c.png" alt="Logo" class="w-12 h-12 rounded-xl object-cover ring-2 ring-blue-500/50 ring-offset-2 ring-offset-slate-900">
+                        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-extrabold tracking-tight text-lg leading-none">EXAM RYZX</h1>
+                        <p class="text-[10px] font-semibold text-blue-400 mt-1 uppercase tracking-widest">Admin Control</p>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <a href="javascript:void(0)" onclick="switchPage('dashboard')" id="link-dashboard" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all active">
+                        <i class="fas fa-th-large text-lg w-6"></i>
+                        <span>Dashboard Utama</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchPage('security')" id="link-security" class="nav-link flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition-all">
+                        <i class="fas fa-user-shield text-lg w-6"></i>
+                        <span>Keamanan & Log</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchPage('android')" id="link-android" class="nav-link flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition-all">
+                        <i class="fas fa-mobile-alt text-lg w-6"></i>
+                        <span>Edit Login Android</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchPage('history')" id="link-history" class="nav-link flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition-all">
+                        <i class="fas fa-clock-rotate-left text-lg w-6"></i>
+                        <span>Riwayat Perubahan</span>
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchPage('broadcast')" id="link-broadcast" class="nav-link flex items-center gap-3 px-4 py-3 hover:bg-slate-800 rounded-xl transition-all">
+                        <i class="fas fa-paper-plane text-lg w-6"></i>
+                        <span>Kirim Pesan/Notif</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="mt-auto p-6 border-t border-slate-800">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <p class="text-[10px] uppercase font-bold text-slate-500 mb-1">Developer</p>
+                    <p class="text-xs font-semibold text-white">BASOASRIL</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <header class="h-16 lg:h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center px-4 lg:px-8 justify-between sticky top-0 lg:top-0 z-10">
+                <div class="flex items-center gap-3 lg:gap-6 min-w-0">
+                    <h2 id="current-page-title" class="text-slate-800 font-bold text-sm lg:text-lg truncate">Manajemen Sesi Ujian</h2>
+                    <div id="syncStatus" class="hidden sm:flex items-center gap-2 px-3 lg:px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] lg:text-[11px] font-bold border border-emerald-100 transition-all duration-500 shrink-0">
+                        <i class="fas fa-circle text-[8px] animate-pulse"></i>
+                        SYSTEM ONLINE
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2 lg:gap-4 shrink-0">
+                    <div id="clock" class="text-xs lg:text-sm font-bold text-slate-600 bg-slate-100 px-3 lg:px-4 py-2 rounded-lg border border-slate-200">00:00:00</div>
+                    <div class="h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs lg:text-sm border border-blue-200">
+                        AD
+                    </div>
+                </div>
+            </header>
+
+            <main class="p-4 lg:p-8 max-w-7xl mx-auto w-full">
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="page-content active">
+                    <div class="bg-white rounded-2xl lg:rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden">
+                        <div class="px-5 lg:px-8 py-5 lg:py-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+                            <div>
+                                <h3 class="text-base lg:text-lg font-bold text-slate-800 italic">Konfigurasi Token</h3>
+                                <p class="text-xs text-slate-500 mt-1">Silahkan Create token anda</p>
+                            </div>
+                            <button onclick="resetAll()" class="px-4 py-2 bg-white text-red-500 border border-red-100 hover:bg-red-50 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 w-full sm:w-auto">
+                                <i class="fas fa-trash-can"></i> Reset Semua Sesi
+                            </button>
+                        </div>
+
+                        <div class="p-4 lg:p-8">
+                            <!-- Hidden on Mobile, Visible on Desktop Table Header -->
+                            <div class="hidden md:grid grid-cols-12 gap-4 mb-4 px-4 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">
+                                <div class="col-span-1">No</div>
+                                <div class="col-span-3">Token Akses</div>
+                                <div class="col-span-5">URL Bank Soal</div>
+                                <div class="col-span-1 text-center">Update</div>
+                                <div class="col-span-2 text-center">Status</div>
+                            </div>
+                            <div id="sessionContainer" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Page -->
+                <div id="page-security" class="page-content">
+                    <div class="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="px-5 lg:px-8 py-5 lg:py-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                            <div>
+                                <h3 class="text-base lg:text-lg font-bold text-slate-800 italic">Log Akses Keamanan</h3>
+                                <p class="text-xs text-slate-500 mt-1">Memantau Alamat IP, Lokasi, dan Identitas Perangkat secara mendalam</p>
+                            </div>
+                            <button onclick="fetchSecurityLogs()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition w-full sm:w-auto">
+                                <i class="fas fa-sync-alt mr-2"></i> Refresh Log
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead>
+                                    <tr class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest bg-slate-50 border-b border-slate-100">
+                                        <th class="px-6 py-4">Waktu</th>
+                                        <th class="px-6 py-4">Informasi Sesi</th>
+                                        <th class="px-6 py-4">Alamat IP</th>
+                                        <th class="px-6 py-4">Detail Perangkat & OS</th>
+                                        <th class="px-6 py-4 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="securityLogContainer"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Android Page -->
+                <div id="page-android" class="page-content">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="px-5 lg:px-8 py-5 lg:py-6 border-b border-slate-100 bg-slate-50/50">
+                                <h3 class="text-base lg:text-lg font-bold text-slate-800 italic">Pengaturan Login Android</h3>
+                            </div>
+                            <div class="p-5 lg:p-8 space-y-6">
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Username Admin Android</label>
+                                    <input type="text" id="android-user" onchange="saveAndroidLogin()" class="input-elegant w-full px-4 py-3 rounded-xl text-sm font-semibold">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Password Akses</label>
+                                    <input type="password" id="android-pass" onchange="saveAndroidLogin()" class="input-elegant w-full px-4 py-3 rounded-xl text-sm font-semibold">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Page -->
+                <div id="page-history" class="page-content">
+                    <div class="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="px-5 lg:px-8 py-5 lg:py-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                            <div>
+                                <h3 class="text-base lg:text-lg font-bold text-slate-800 italic">Riwayat Perubahan Token & Link</h3>
+                                <p class="text-xs text-slate-500 mt-1">Data tersimpan permanen meskipun token saat ini dihapus</p>
+                            </div>
+                            <button onclick="clearHistory()" class="px-4 py-2 bg-red-50 text-red-600 text-xs font-bold rounded-xl hover:bg-red-100 transition w-full sm:w-auto">
+                                <i class="fas fa-eraser mr-2"></i> Bersihkan Riwayat
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-[600px]">
+                            <table class="w-full text-left whitespace-nowrap">
+                                <thead>
+                                    <tr class="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest bg-slate-50 border-b border-slate-100">
+                                        <th class="px-6 lg:px-8 py-4">Waktu Kejadian</th>
+                                        <th class="px-6 lg:px-8 py-4">Sesi</th>
+                                        <th class="px-6 lg:px-8 py-4">Aksi</th>
+                                        <th class="px-6 lg:px-8 py-4">Detail Data (Token & Link)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyLogContainer"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Broadcast Page -->
+                <div id="page-broadcast" class="page-content">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="bg-white rounded-2xl lg:rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="px-5 lg:px-8 py-5 lg:py-6 border-b border-slate-100 bg-slate-50/50">
+                                <h3 class="text-base lg:text-lg font-bold text-slate-800 italic">Kirim Pesan ke Siswa (EXAM13)</h3>
+                                <p class="text-xs text-slate-500 mt-1">Pesan akan muncul sebagai notifikasi di layar siswa.</p>
+                            </div>
+                            <div class="p-5 lg:p-8 space-y-6">
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Isi Pesan</label>
+                                    <textarea id="broadcast-msg" placeholder="Contoh: Waktu sisa 10 menit lagi!" class="input-elegant w-full px-4 py-3 rounded-xl text-sm font-semibold min-h-[120px]"></textarea>
+                                </div>
+                                <button onclick="sendBroadcast()" id="btn-send" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition flex items-center justify-center gap-3">
+                                    <i class="fas fa-paper-plane"></i> Kirim Pesan Sekarang
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN_URL = 'https://script.google.com/macros/s/AKfycbwr2ImoBNG0nvkhkCx04nWJ6LFgkSVxS2vLaSffIJqZ0gNBtP9ua6MZVj_LFp5dm3WxTA/exec'; 
+        const API_LOG_URL   = 'https://script.google.com/macros/s/AKfycby7kuopc4d7sQ2ABBymNRJDwZa0m1DzWc32SR1e9uqxmhWRietmD4YuTKBwkRaSBuyo/exec'; 
+        const API_MESSAGE_URL = 'https://script.google.com/macros/s/AKfycbwwpX73Kh9J0UzefY-0i_HDSNFN25U0syjdFHcJil_o2eK4kmhAl6Xp4oFE7mx3SzaB/exec';
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex', 'absolute', 'inset-x-0', 'top-16', 'z-50');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex', 'absolute', 'inset-x-0', 'top-16', 'z-50');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('link-' + pageId).classList.add('active');
+            
+            // Close mobile menu on select
+            if(window.innerWidth < 1024) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex', 'absolute', 'inset-x-0', 'top-16', 'z-50');
+                const icon = document.getElementById('mobile-menu-icon');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+
+            const titles = { 
+                'dashboard': 'Manajemen Sesi Ujian', 
+                'security': 'Keamanan & Monitoring Perangkat',
+                'android': 'Edit Login Android',
+                'history': 'Riwayat Perubahan Permanen',
+                'broadcast': 'Kirim Pesan ke Siswa'
+            };
+            document.getElementById('current-page-title').innerText = titles[pageId];
+            
+            if(pageId === 'security') fetchSecurityLogs();
+            if(pageId === 'android') loadAndroidLogin();
+            if(pageId === 'history') renderHistory();
+        }
+
+        async function fetchSecurityLogs() {
+            const container = document.getElementById('securityLogContainer');
+            container.innerHTML = '<tr><td colspan="5" class="p-10 text-center"><i class="fas fa-spinner fa-spin mr-2"></i> Memuat Data...</td></tr>';
+            
+            try {
+                const response = await fetch(API_LOG_URL);
+                const data = await response.json();
+                
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-slate-400 italic">Tidak ada log aktivitas terdeteksi.</td></tr>';
+                    return;
+                }
+
+                container.innerHTML = data.map(log => `
+                    <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                        <td class="px-6 py-4">
+                            <p class="text-[11px] font-bold text-slate-700">${log.waktu?.split(',')[0] || '-'}</p>
+                            <p class="text-[10px] text-slate-400">${log.waktu?.split(',')[1] || ''}</p>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col gap-1">
+                                <span class="px-2 py-1 bg-blue-50 text-blue-600 rounded-md text-[10px] font-bold w-fit">SESI: ${log.token || 'Unknown'}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-xs font-mono font-bold text-slate-600">
+                            ${log.ip || '---'}
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="text-[11px] font-semibold text-slate-700 truncate max-w-[250px]">
+                                ${log.device || 'Unknown Device'}
+                            </p>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-extrabold rounded-full border border-emerald-100">VERIFIED</span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-400">Gagal memuat log.</td></tr>';
+            }
+        }
+
+        async function sendBroadcast() {
+            const msgInput = document.getElementById('broadcast-msg');
+            const btn = document.getElementById('btn-send');
+            const pesan = msgInput.value.trim();
+
+            if(!pesan) return alert("Pesan tidak boleh kosong!");
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+            try {
+                const finalUrl = `${API_MESSAGE_URL}?action=send&message=${encodeURIComponent(pesan)}`;
+                const res = await fetch(finalUrl, { method: 'GET' });
+
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                alert("Pesan berhasil dikirim!");
+                msgInput.value = "";
+            } catch (e) {
+                console.error(e);
+                alert("Gagal mengirim pesan. Pastikan Apps Script aktif dan CORS sudah sesuai.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Pesan Sekarang';
+            }
+        }
+
+        function saveToHistory(sesi, aksi, token, link) {
+            let history = JSON.parse(localStorage.getItem('exam13_history')) || [];
+            const newEntry = {
+                waktu: new Date().toLocaleString('id-ID'),
+                sesi: sesi,
+                aksi: aksi,
+                token: token || "---",
+                link: link || "---"
+            };
+            history.unshift(newEntry);
+            localStorage.setItem('exam13_history', JSON.stringify(history.slice(0, 100)));
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyLogContainer');
+            const history = JSON.parse(localStorage.getItem('exam13_history')) || [];
+            
+            if(history.length === 0) {
+                container.innerHTML = '<tr><td colspan="4" class="p-10 text-center text-slate-400 italic">Belum ada riwayat perubahan.</td></tr>';
+                return;
+            }
+
+            container.innerHTML = history.map(item => `
+                <tr class="border-b border-slate-50 hover:bg-slate-50 transition">
+                    <td class="px-6 lg:px-8 py-4 text-slate-500 font-medium text-xs">${item.waktu}</td>
+                    <td class="px-6 lg:px-8 py-4 font-bold text-slate-700 text-xs">SESI 0${item.sesi}</td>
+                    <td class="px-6 lg:px-8 py-4">
+                        <span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${item.aksi.includes('HAPUS') ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}">
+                            ${item.aksi}
+                        </span>
+                    </td>
+                    <td class="px-6 lg:px-8 py-4">
+                        <div class="text-[11px]">
+                            <p class="font-mono font-bold text-blue-600">TOKEN: ${item.token}</p>
+                            <p class="text-slate-400 truncate max-w-xs">LINK: ${item.link}</p>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function clearHistory() {
+            if(confirm("Hapus semua catatan riwayat?")) {
+                localStorage.removeItem('exam13_history');
+                renderHistory();
+            }
+        }
+
+        function createToken() {
+            const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            const numbers = "0123456789";
+            let p1 = ""; for(let i=0; i<5; i++) p1 += letters.charAt(Math.floor(Math.random() * letters.length));
+            let p2 = ""; for(let i=0; i<3; i++) p2 += numbers.charAt(Math.floor(Math.random() * numbers.length));
+            return `${p1}-${p2}`;
+        }
+
+        const sessionContainer = document.getElementById('sessionContainer');
+        const savedData = JSON.parse(localStorage.getItem('exam13_data')) || {};
+
+        function renderSessions() {
+            sessionContainer.innerHTML = '';
+            for (let i = 1; i <= 7; i++) {
+                const tokenVal = savedData[`token-${i}`] || "";
+                const urlVal = savedData[`url-${i}`] || "";
+                const statusVal = savedData[`status-${i}`] !== false;
+
+                const div = document.createElement('div');
+                div.className = "session-card grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 items-center p-4 rounded-2xl border border-slate-100 bg-white group";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between md:col-span-1">
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 font-bold text-xs">0${i}</span>
+                        <div class="md:hidden flex items-center gap-2">
+                            <span id="label-m-${i}" class="text-[9px] font-extrabold uppercase tracking-widest ${statusVal ? 'text-emerald-500' : 'text-slate-400'}">${statusVal ? 'Active' : 'Disabled'}</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="status-m-${i}" class="sr-only peer" ${statusVal ? 'checked' : ''} onchange="syncMobileDesktop(${i}, this.checked)">
+                                <div class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 relative">
+                        <input type="text" id="token-${i}" readonly value="${tokenVal}" class="w-full px-4 py-2.5 md:py-3 rounded-xl border border-slate-100 token-font text-blue-600 font-bold bg-slate-50/50 uppercase text-sm">
+                    </div>
+                    <div class="md:col-span-5">
+                        <input type="url" id="url-${i}" value="${urlVal}" onchange="trackAndSave(${i})" placeholder="Masukkan Link..." class="input-elegant w-full px-4 py-2.5 md:py-3 rounded-xl text-sm text-slate-600">
+                    </div>
+                    <div class="flex items-center justify-between md:contents">
+                        <div class="md:col-span-1 flex justify-start md:justify-center">
+                            <button onclick="generateSingle(${i})" class="h-10 w-10 md:h-11 md:w-11 flex items-center justify-center bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
+                                <i class="fas fa-arrows-rotate text-sm"></i>
+                                <span class="md:hidden ml-2 text-xs font-semibold text-slate-600">Generate Token</span>
+                            </button>
+                        </div>
+                        <div class="hidden md:flex md:col-span-2 justify-center">
+                            <div class="flex flex-col items-center gap-1.5">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="status-${i}" class="sr-only peer" ${statusVal ? 'checked' : ''} onchange="updateVisual(${i})">
+                                    <div class="w-12 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                </label>
+                                <span id="label-${i}" class="text-[9px] font-extrabold uppercase tracking-widest ${statusVal ? 'text-emerald-500' : 'text-slate-400'}">${statusVal ? 'Active' : 'Disabled'}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                sessionContainer.appendChild(div);
+            }
+        }
+
+        function syncMobileDesktop(i, isChecked) {
+            document.getElementById(`status-${i}`).checked = isChecked;
+            updateVisual(i);
+        }
+
+        function trackAndSave(i) {
+            const tk = document.getElementById(`token-${i}`).value;
+            const ur = document.getElementById(`url-${i}`).value;
+            saveToHistory(i, "UBAH LINK", tk, ur);
+            simpanOtomatis();
+        }
+
+        async function simpanOtomatis() {
+            const dataKeCloud = [];
+            const localData = JSON.parse(localStorage.getItem('exam13_data')) || {};
+            for(let i=1; i<=7; i++) {
+                const tk = document.getElementById(`token-${i}`).value;
+                const ur = document.getElementById(`url-${i}`).value;
+                const st = document.getElementById(`status-${i}`).checked;
+                localData[`token-${i}`] = tk;
+                localData[`url-${i}`] = ur;
+                localData[`status-${i}`] = st;
+                if(tk && ur) dataKeCloud.push({ token: tk.toUpperCase(), url: st ? ur : "" });
+            }
+            localStorage.setItem('exam13_data', JSON.stringify(localData));
+            showSyncingStatus(dataKeCloud);
+        }
+
+        async function showSyncingStatus(data) {
+            const indicator = document.getElementById('syncStatus');
+            if(!indicator) return;
+            indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SYNCING...';
+            try {
+                await fetch(API_TOKEN_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(data) 
+                });
+                setTimeout(() => {
+                    indicator.innerHTML = '<i class="fas fa-circle text-[8px] animate-pulse"></i> SYSTEM ONLINE';
+                }, 800);
+            } catch (err) {
+                indicator.innerHTML = 'SYNC ERROR';
+            }
+        }
+
+        function generateSingle(i) {
+            const newToken = createToken();
+            const url = document.getElementById(`url-${i}`).value;
+            document.getElementById(`token-${i}`).value = newToken;
+            saveToHistory(i, "GENERATE TOKEN BARU", newToken, url);
+            simpanOtomatis();
+        }
+
+        function updateVisual(i) {
+            const cb = document.getElementById(`status-${i}`);
+            const cbM = document.getElementById(`status-m-${i}`);
+            if(cbM) cbM.checked = cb.checked;
+
+            const lbl = document.getElementById(`label-${i}`);
+            const lblM = document.getElementById(`label-m-${i}`);
+            
+            const statusText = cb.checked ? "Active" : "Disabled";
+            if(lbl) {
+                lbl.innerText = statusText;
+                lbl.className = `text-[9px] font-extrabold uppercase tracking-widest ${cb.checked ? 'text-emerald-500' : 'text-slate-400'}`;
+            }
+            if(lblM) {
+                lblM.innerText = statusText;
+                lblM.className = `text-[9px] font-extrabold uppercase tracking-widest ${cb.checked ? 'text-emerald-500' : 'text-slate-400'}`;
+            }
+            simpanOtomatis();
+        }
+
+        function resetAll() {
+            if(confirm("Hapus semua konfigurasi? Riwayat perubahan akan tetap disimpan.")) { 
+                localStorage.removeItem('exam13_data'); 
+                location.reload(); 
+            }
+        }
+
+        setInterval(() => {
+            const clockEl = document.getElementById('clock');
+            if(clockEl) {
+                clockEl.innerText = new Date().toLocaleTimeString('id-ID', {hour12: false});
+            }
+        }, 1000);
+
+        renderSessions();
+    </script>
+</body>
+</html>
